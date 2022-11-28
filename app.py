@@ -43,6 +43,10 @@ def dehumid_off_car_on():
     port_map['Dehumidifier'].turn_off()
     port_map['Car'].turn_on()
 
+def dehumid_on_car_off():
+    port_map['Car'].turn_off()
+    port_map['Dehumidifier'].turn_on()
+
 @app.callback(
     Output("charge_time_output", "children"),
     Input("charge_time", "value")
@@ -56,7 +60,8 @@ def set_car_schedule(start_time: str):
         stop_schedule.set()
     schedule.clear()
     schedule.every().day.at(start_time).do(dehumid_off_car_on)
-    stop_schedule = run_continuously(interval=5)
+    schedule.every().day.at("06:15").do(dehumid_on_car_off)
+    stop_schedule = run_continuously(interval=60)
     return f"Scheduled car on at {start_time}"
 
 @app.callback(
